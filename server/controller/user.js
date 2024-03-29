@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { route } = require("../router/user");
 
 const userSignup = async (req, res, next) => {
   try {
@@ -16,6 +17,7 @@ const userSignup = async (req, res, next) => {
       });
     }
 
+    // password hash
     const saltRounds = 10;
     const hashPass = await bcrypt.hash(password, saltRounds);
     // console.log(hashPass)
@@ -36,7 +38,7 @@ const userSignup = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
-      token:token,
+      token: token,
       message: "User registration successful.",
     });
   } catch (error) {
@@ -49,6 +51,54 @@ const userSignup = async (req, res, next) => {
   }
 };
 
+// login user
+
+const userLogin = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    const userRegiser = await User.findOne({ email });
+
+    if (!userRegiser) {
+      res.status(400).json({
+        success: true,
+        message: "User not register please register first and then login",
+      });
+    }
+
+    const passwordHash = userRegiser.password;
+    const id = userRegiser._id;
+
+    // token
+    const token = jwt.sign({ id }, "Suraj");
+
+    const comparePassword = await bcrypt.compare(password, passwordHash);
+    // console.log(comparePassword)
+
+    if (comparePassword) {
+      res.status(200).json({
+        success: true,
+        message: "Login successfull..!",
+        token: token,
+        userData: userRegiser,
+      });
+    } else {
+      res.status(411).json({
+        success: true,
+        message: "Password does not match",
+      });
+    }
+  } catch (error) {
+    // Handle any errors
+    console.error("Error during user signup:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
 module.exports = {
   userSignup,
+  userLogin,
 };
