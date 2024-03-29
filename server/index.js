@@ -2,6 +2,7 @@ const express = require('express')
 const dotenv = require('dotenv');
 const connectToDb = require('./db')
 const user = require("./router/user")
+const blog = require("./router/blog")
 const app = express();
 
 
@@ -12,6 +13,7 @@ app.use(express.json())
 
 // /routes
 app.use("/api/v1/user",user);
+app.use("/api/v1/user",blog);
 app.get("/",(req,res)=>{
     res.send("Server is running ")
     req.body

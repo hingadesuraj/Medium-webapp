@@ -80,7 +80,7 @@ const userLogin = async (req, res, next) => {
         success: true,
         message: "Login successfull..!",
         token: token,
-        userData: userRegiser,
+        // userData: userRegiser ,
       });
     } else {
       res.status(411).json({
