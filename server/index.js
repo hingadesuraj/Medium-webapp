@@ -13,7 +13,7 @@ app.use(express.json())
 
 // /routes
 app.use("/api/v1/user",user);
-app.use("/api/v1/user",blog);
+app.use("/api/v1/blog",blog);
 app.get("/",(req,res)=>{
     res.send("Server is running ")
     req.body
